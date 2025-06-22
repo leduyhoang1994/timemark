@@ -297,25 +297,29 @@
         const downloadBtn = document.getElementById('download-image');
 
         function downloadDivAsJPG() {
-            const div = wrapper;
+            try {
+                const div = wrapper;
 
-            // Đợi tất cả ảnh trong div load xong
-            const images = div.querySelectorAll("img");
-            const promises = Array.from(images).map(img => {
-                if (img.complete) return Promise.resolve();
-                return new Promise(resolve => {
-                    img.onload = img.onerror = resolve;
+                // Đợi tất cả ảnh trong div load xong
+                const images = div.querySelectorAll("img");
+                const promises = Array.from(images).map(img => {
+                    if (img.complete) return Promise.resolve();
+                    return new Promise(resolve => {
+                        img.onload = img.onerror = resolve;
+                    });
                 });
-            });
 
-            Promise.all(promises).then(() => {
-                html2canvas(div, { backgroundColor: "#fff" }).then(canvas => {
-                    const link = document.createElement("a");
-                    link.download = "screenshot.jpg";
-                    link.href = canvas.toDataURL("image/jpeg", 1.0);
-                    link.click();
+                Promise.all(promises).then(() => {
+                    html2canvas(div, { backgroundColor: "#fff" }).then(canvas => {
+                        const link = document.createElement("a");
+                        link.download = "screenshot.jpg";
+                        link.href = canvas.toDataURL("image/jpeg", 1.0);
+                        link.click();
+                    });
                 });
-            });
+            } catch (error) {
+                alert(error);
+            }
         }
 
         function getVietnameseDayOfWeek(date) {
@@ -336,24 +340,30 @@
         }
 
         function setupImage() {
-            if (!upload.files.length) {
-                alert('Cần chọn ảnh trước');
-                return false;
+
+            try {
+
+                if (!upload.files.length) {
+                    alert('Cần chọn ảnh trước');
+                    return false;
+                }
+
+                const [file] = upload.files
+
+                const src = URL.createObjectURL(file);
+                wrapper.style.backgroundImage = `url(${src})`;
+
+                document.getElementById('time').innerHTML = document.getElementById('time-picker').value;
+                const date = document.getElementById('date-picker').valueAsDate;
+
+                document.getElementById("date").innerHTML = date.getDate() + " Tháng " + (date.getMonth() + 1) + "," + date.getFullYear();
+                document.getElementById("weekday").innerHTML = getVietnameseDayOfWeek(date);
+                document.getElementById("guard-token").innerHTML = generateRandomString(14);
+                document.getElementById("location").innerText = document.getElementById("location-picker").value;
+                downloadBtn.removeAttribute('disabled');
+            } catch (error) {
+                alert(error);
             }
-
-            const [file] = upload.files
-
-            const src = URL.createObjectURL(file);
-            wrapper.style.backgroundImage = `url(${src})`;
-
-            document.getElementById('time').innerHTML = document.getElementById('time-picker').value;
-            const date = document.getElementById('date-picker').valueAsDate;
-
-            document.getElementById("date").innerHTML = date.getDate() + " Tháng " + (date.getMonth() + 1) + "," + date.getFullYear();
-            document.getElementById("weekday").innerHTML = getVietnameseDayOfWeek(date);
-            document.getElementById("guard-token").innerHTML = generateRandomString(14);
-            document.getElementById("location").innerText = document.getElementById("location-picker").value;
-            downloadBtn.removeAttribute('disabled');
 
             return true;
         }
