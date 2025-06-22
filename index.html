@@ -6,6 +6,7 @@
     <title>Chèn Text & Watermark vào Ảnh</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="./heic2jpg.js"></script>
 
     <style>
         @font-face {
@@ -197,10 +198,14 @@
         }
 
         .view-port {
-            width: 50%;
+            width: 0;
+            height: 0;
             overflow: scroll;
-            aspect-ratio: 1290 / 1720;
             margin-top: 10px;
+        }
+
+        .hide {
+            display: none;
         }
     </style>
 </head>
@@ -231,12 +236,10 @@
         </div>
 
         <div>
-            <button id="preview-image" onclick="preview()" style="margin-right: 100px;">
-                Xem trước
+            <button id="preview-image" onclick="downloadImage()" style="margin-right: 100px;">
+                Tạo
             </button>
-            <button id="download-image" onclick="downloadImage()" disabled>
-                Tải ảnh
-            </button>
+            <i id="loading" class="hide">Đang xử lý . . .</i>
         </div>
     </div>
 
@@ -303,13 +306,14 @@
         </div>
     </div>
 
-    <img src="" alt="" id="image-to-download">
+    <img src="" alt="" id="image-to-download" width="100%" height="auto">
 
     <script>
         const upload = document.getElementById('upload');
         const image = document.getElementById('image');
         const wrapper = document.getElementById('wrapper');
         const downloadBtn = document.getElementById('download-image');
+        const loading = document.getElementById('loading');
 
         function isIOS() {
             return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -317,6 +321,7 @@
 
         function downloadDivAsJPG() {
             try {
+                loading.classList.toggle('hide', false);
                 const div = wrapper;
                 html2canvas(div, {
                     backgroundColor: "#fff",
@@ -327,20 +332,12 @@
 
                     const dataUrl = canvas.toDataURL("image/jpeg", 1.0);
                     const download = "screen_shot.jpg";
-                    if (isIOS()) {
-                        var img = document.getElementById('image-to-download');
-                        img.crossOrigin = "Anonymous";
-                        img.src = dataUrl;
-                        document.body.appendChild(img);
 
-                        alert('Tải ảnh vừa được tạo ở dưới cùng về.')
-                    } else {
-                        // Desktop, Android: tải về bình thường
-                        const a = document.createElement("a");
-                        a.href = dataUrl;
-                        a.download = download;
-                        a.click();
-                    }
+                    var img = document.getElementById('image-to-download');
+                    img.crossOrigin = "Anonymous";
+                    img.src = dataUrl;
+                    document.body.appendChild(img);
+                    loading.classList.toggle('hide', true);
                 }).catch(e => {
                     alert(e);
                 });
@@ -366,19 +363,26 @@
             return daysOfWeek[dayIndex];
         }
 
-        function setupImage() {
-
+        async function setupImage() {
             try {
-
                 if (!upload.files.length) {
                     alert('Cần chọn ảnh trước');
                     return false;
                 }
 
+                loading.classList.toggle('hide', false);
+
                 const [file] = upload.files
 
-                const src = URL.createObjectURL(file);
-                wrapper.style.backgroundImage = `url(${src})`;
+                if (file.name.endsWith('.heic')) {
+                    const convertedBlob = await heic2any({ blob: file, toType: 'image/jpeg' });
+                    const imageUrl = URL.createObjectURL(convertedBlob);
+
+                    wrapper.style.backgroundImage = `url(${imageUrl})`;
+                } else {
+                    const src = URL.createObjectURL(file);
+                    wrapper.style.backgroundImage = `url(${src})`;
+                }
 
                 document.getElementById('time').innerHTML = document.getElementById('time-picker').value;
                 const date = document.getElementById('date-picker').valueAsDate;
@@ -387,7 +391,8 @@
                 document.getElementById("weekday").innerHTML = getVietnameseDayOfWeek(date);
                 document.getElementById("guard-token").innerHTML = generateRandomString(14);
                 document.getElementById("location").innerText = document.getElementById("location-picker").value;
-                downloadBtn.removeAttribute('disabled');
+
+                loading.classList.toggle('hide', true);
             } catch (error) {
                 alert(error);
             }
@@ -396,17 +401,16 @@
         }
 
         upload.addEventListener('change', (e) => {
-            setupImage();
+            // setupImage();
         });
 
         function preview() {
-            setupImage();
+            // setupImage();
         }
 
-        function downloadImage() {
-            if (setupImage()) {
-                downloadDivAsJPG();
-            }
+        async function downloadImage() {
+            await setupImage();
+            downloadDivAsJPG();
         }
 
         const current = new Date();
