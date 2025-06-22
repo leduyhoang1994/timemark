@@ -329,7 +329,7 @@
                 });
 
                 Promise.all(promises).then(() => {
-                    html2canvas(div, { backgroundColor: "#fff" }).then(canvas => {
+                    html2canvas(div, { backgroundColor: "#fff", allowTaint: true, useCORS: true }).then(canvas => {
 
                         const dataUrl = canvas.toDataURL("image/jpeg", 1.0);
                         const download = "screen_shot.jpg";
