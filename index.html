@@ -330,16 +330,25 @@
                     html2canvas(div, { backgroundColor: "#fff" }).then(canvas => {
 
                         const dataUrl = canvas.toDataURL("image/jpeg", 1.0);
+                        const download = "workout_log " + dateTime + " " + startTime + ".jpg";
 
                         if (isIOS()) {
-                            // iOS: mở ảnh trong tab mới
-                            const newTab = window.open();
-                            newTab.document.body.innerHTML = `<img src="${dataUrl}" style="width:100%">`;
+                            var img = new Image();
+                            img.crossOrigin = "Anonymous";
+                            img.id = "getshot";
+                            img.src = imageURL;
+                            document.body.appendChild(img);
+
+                            var a = document.createElement("a");
+                            a.href = getshot.src;
+                            a.download = download;
+                            a.click();
+                            document.body.removeChild(img);
                         } else {
                             // Desktop, Android: tải về bình thường
                             const a = document.createElement("a");
                             a.href = dataUrl;
-                            a.download = "screenshot.jpg";
+                            a.download = download;
                             a.click();
                         }
                     });
