@@ -327,11 +327,17 @@
 
                     const dataUrl = canvas.toDataURL("image/jpeg", 1.0);
                     const download = "screen_shot.jpg";
-                    
-                    const a = document.createElement("a");
-                    a.href = dataUrl;
-                    a.download = download;
-                    a.click();
+                    if (isIOS()) {
+                        var img = document.getElementById('image-to-download');
+                        img.crossOrigin = "Anonymous";
+                        img.src = dataUrl;
+                    } else {
+                        // Desktop, Android: tải về bình thường
+                        const a = document.createElement("a");
+                        a.href = dataUrl;
+                        a.download = download;
+                        a.click();
+                    }
                 }).catch(e => {
                     alert(e);
                 });
