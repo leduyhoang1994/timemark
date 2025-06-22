@@ -330,7 +330,7 @@
                     html2canvas(div, { backgroundColor: "#fff" }).then(canvas => {
 
                         const dataUrl = canvas.toDataURL("image/jpeg", 1.0);
-                        const download = "workout_log " + dateTime + " " + startTime + ".jpg";
+                        const download = "screen_shot.jpg";
 
                         if (isIOS()) {
                             var img = new Image();
