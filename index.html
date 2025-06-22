@@ -197,7 +197,7 @@
         }
 
         .view-port {
-            width: 100%;
+            width: 50%;
             overflow: scroll;
             aspect-ratio: 1290 / 1720;
             margin-top: 10px;
@@ -207,7 +207,7 @@
 
 <body>
     <i>
-        <div style="color: black; text-align: left !important;">Version: 1.0.5</div>
+        <div style="color: black; text-align: left !important;">Version: 1.0.6</div>
     </i>
     <br>
     <div class="form-custom">
@@ -303,6 +303,8 @@
         </div>
     </div>
 
+    <img src="" alt="" id="image-to-download">
+
     <script>
         const upload = document.getElementById('upload');
         const image = document.getElementById('image');
@@ -333,17 +335,9 @@
                         const download = "screen_shot.jpg";
 
                         if (isIOS()) {
-                            var img = new Image();
+                            var img = document.getElementById('image-to-download');
                             img.crossOrigin = "Anonymous";
-                            img.id = "getshot";
-                            img.src = imageURL;
-                            document.body.appendChild(img);
-
-                            var a = document.createElement("a");
-                            a.href = getshot.src;
-                            a.download = download;
-                            a.click();
-                            document.body.removeChild(img);
+                            img.src = dataUrl;
                         } else {
                             // Desktop, Android: tải về bình thường
                             const a = document.createElement("a");
@@ -443,8 +437,14 @@
             return result;
         }
 
+        function formatTime(date) {
+            const h = String(date.getHours()).padStart(2, '0');
+            const m = String(date.getMinutes()).padStart(2, '0');
+            return `${h}:${m}`;
+        }
+
         setTimeout(() => {
-            document.getElementById('time-picker').value = current.getHours() + ":" + current.getMinutes();
+            document.getElementById('time-picker').value = formatTime(current);
             document.getElementById('date-picker').valueAsDate = current;
         }, 100);
 
