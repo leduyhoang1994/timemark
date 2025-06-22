@@ -77,10 +77,16 @@
         }
 
         .time {
-            height: 125px;
             font-size: 137px;
             font-family: 'social-gothic';
             text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+            transform: translateY(-48px);
+        }
+
+        .time-wrap {
+            height: 135px;
+            width: auto;
+            overflow-y: hidden;
         }
 
         .date {
@@ -89,7 +95,6 @@
             justify-content: space-between;
             font-size: 43px;
             height: 140px;
-            margin-top: 46px;
             padding-left: 26px;
             word-spacing: -6px;
         }
@@ -100,8 +105,7 @@
 
         div.seperator {
             border-right: 6px #f7c22e solid;
-            height: 125px;
-            margin-top: 55px;
+            height: 135px;
             margin-left: 25px;
         }
 
@@ -203,7 +207,7 @@
 
 <body>
     <i>
-        <div style="color: black; text-align: left !important;">Version: 1.0.3</div>
+        <div style="color: black; text-align: left !important;">Version: 1.0.4</div>
     </i>
     <br>
     <div class="form-custom">
@@ -242,8 +246,10 @@
             <div class="water-mark">
                 <div class="left">
                     <div class="line-1">
-                        <div class="time" id="time">
-                            15:42
+                        <div class="time-wrap">
+                            <div class="time" id="time">
+                                15:42
+                            </div>
                         </div>
                         <div class="seperator">
 
