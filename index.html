@@ -202,7 +202,9 @@
 </head>
 
 <body>
-    <i><div style="color: black; text-align: left !important;">Version: 1.0.0</div></i>
+    <i>
+        <div style="color: black; text-align: left !important;">Version: 1.0.1</div>
+    </i>
     <br>
     <div class="form-custom">
         <div>
@@ -412,8 +414,10 @@
             return result;
         }
 
-        document.getElementById('time-picker').value = current.getHours() + ":" + current.getMinutes();
-        document.getElementById('date-picker').valueAsDate = current;
+        setTimeout(() => {
+            document.getElementById('time-picker').value = current.getHours() + ":" + current.getMinutes();
+            document.getElementById('date-picker').valueAsDate = current;
+        }, 100);
 
         function reverseGeocode(lat, lon) {
             const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`;
