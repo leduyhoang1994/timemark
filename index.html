@@ -332,8 +332,11 @@
                     html2canvas(div, { backgroundColor: "#fff", allowTaint: true, useCORS: true }).then(canvas => {
 
                         const dataUrl = canvas.toDataURL("image/jpeg", 1.0);
+                        alert(dataUrl);
+
                         const download = "screen_shot.jpg";
 
+                        alert("ios" + isIOS())
                         if (isIOS()) {
                             var img = document.getElementById('image-to-download');
                             img.crossOrigin = "Anonymous";
@@ -345,6 +348,8 @@
                             a.download = download;
                             a.click();
                         }
+                    }).catch(e => {
+                        alert(e);
                     });
                 });
             } catch (error) {
