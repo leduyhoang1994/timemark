@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Chèn Text & Watermark vào Ảnh</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <style>
         @font-face {
@@ -318,39 +318,27 @@
         function downloadDivAsJPG() {
             try {
                 const div = wrapper;
+                html2canvas(div, { backgroundColor: "#fff", allowTaint: true, useCORS: true }).then(canvas => {
 
-                // Đợi tất cả ảnh trong div load xong
-                const images = div.querySelectorAll("img");
-                const promises = Array.from(images).map(img => {
-                    if (img.complete) return Promise.resolve();
-                    return new Promise(resolve => {
-                        img.onload = img.onerror = resolve;
-                    });
-                });
+                    const dataUrl = canvas.toDataURL("image/jpeg", 1.0);
+                    alert(dataUrl);
 
-                Promise.all(promises).then(() => {
-                    html2canvas(div, { backgroundColor: "#fff", allowTaint: true, useCORS: true }).then(canvas => {
+                    const download = "screen_shot.jpg";
 
-                        const dataUrl = canvas.toDataURL("image/jpeg", 1.0);
-                        alert(dataUrl);
-
-                        const download = "screen_shot.jpg";
-
-                        alert("ios" + isIOS())
-                        if (isIOS()) {
-                            var img = document.getElementById('image-to-download');
-                            img.crossOrigin = "Anonymous";
-                            img.src = dataUrl;
-                        } else {
-                            // Desktop, Android: tải về bình thường
-                            const a = document.createElement("a");
-                            a.href = dataUrl;
-                            a.download = download;
-                            a.click();
-                        }
-                    }).catch(e => {
-                        alert(e);
-                    });
+                    alert("ios" + isIOS())
+                    if (isIOS()) {
+                        var img = document.getElementById('image-to-download');
+                        img.crossOrigin = "Anonymous";
+                        img.src = dataUrl;
+                    } else {
+                        // Desktop, Android: tải về bình thường
+                        const a = document.createElement("a");
+                        a.href = dataUrl;
+                        a.download = download;
+                        a.click();
+                    }
+                }).catch(e => {
+                    alert(e);
                 });
             } catch (error) {
                 alert(error);
