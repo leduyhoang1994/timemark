@@ -203,7 +203,7 @@
 
 <body>
     <i>
-        <div style="color: black; text-align: left !important;">Version: 1.0.1</div>
+        <div style="color: black; text-align: left !important;">Version: 1.0.2</div>
     </i>
     <br>
     <div class="form-custom">
@@ -318,10 +318,20 @@
 
                 Promise.all(promises).then(() => {
                     html2canvas(div, { backgroundColor: "#fff" }).then(canvas => {
-                        const link = document.createElement("a");
-                        link.download = "screenshot.jpg";
-                        link.href = canvas.toDataURL("image/jpeg", 1.0);
-                        link.click();
+
+                        const dataUrl = canvas.toDataURL("image/jpeg", 1.0);
+
+                        if (isIOS()) {
+                            // iOS: mở ảnh trong tab mới
+                            const newTab = window.open();
+                            newTab.document.body.innerHTML = `<img src="${dataUrl}" style="width:100%">`;
+                        } else {
+                            // Desktop, Android: tải về bình thường
+                            const a = document.createElement("a");
+                            a.href = dataUrl;
+                            a.download = "screenshot.jpg";
+                            a.click();
+                        }
                     });
                 });
             } catch (error) {
