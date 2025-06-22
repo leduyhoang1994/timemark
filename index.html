@@ -203,7 +203,7 @@
 
 <body>
     <i>
-        <div style="color: black; text-align: left !important;">Version: 1.0.2</div>
+        <div style="color: black; text-align: left !important;">Version: 1.0.3</div>
     </i>
     <br>
     <div class="form-custom">
@@ -302,6 +302,10 @@
         const image = document.getElementById('image');
         const wrapper = document.getElementById('wrapper');
         const downloadBtn = document.getElementById('download-image');
+
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        }
 
         function downloadDivAsJPG() {
             try {
