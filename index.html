@@ -318,7 +318,12 @@
         function downloadDivAsJPG() {
             try {
                 const div = wrapper;
-                html2canvas(div, { backgroundColor: "#fff", allowTaint: true, useCORS: true }).then(canvas => {
+                html2canvas(div, {
+                    backgroundColor: "#fff",
+                    logging: true,
+                    // set screenshot less than 4,096 x 4,096px
+                    scale: Math.min(window.devicePixelRatio, 2),
+                }).then(canvas => {
 
                     const dataUrl = canvas.toDataURL("image/jpeg", 1.0);
                     alert(dataUrl);
